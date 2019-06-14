@@ -26,11 +26,6 @@ unit_test:
   script:
     - mvn clean test -B
 
-check_style:
-  stage: test
-  script:
-    - mvn clean checkstyle:check -B
-
 .build: &build_template
   stage: build
   script:
