@@ -4,6 +4,16 @@ public class ClientConstants {
     public static final String CLIENT_CONTROLLER_MAPPING = "/post";
     public static final String SEARCH_CONTROLLER_MAPPING = "/search";
     public static final String CLIENT_ADD_POSTS = "/add";
+    public static final String CLIENT_GET_POSTS = "/get";
+    public static final String CLIENT_ADD_TAG_TO_POST = "/tag/add";
+    public static final String CLIENT_REMOVE_TAG_FROM_POST = "/tag/remove";
+    public static final String CLIENT_REMOVE_TAGGED_USER_FROM_POST = "/tagged_user/remove";
+    public static final String CLIENT_ADD_TAGGED_USER_TO_POST = "/tagged_user/add";
+    public static final String CLIENT_UPDATE_POST = "/update/{post_id}";
+    public static final String CLIENT_ADD_COMMENT_OR_EMOJI = "/comment_emoji";
+    public static final String CLIENT_ADD_RECOMMENDATION = "/recommendation/add";
+    public static final String CLIENT_REMOVE_RECOMMENDATION = "/recommendation/remove";
+    public static final String CLIENT_GET_RECOMMENDATION = "/recommendation/get";
 
     public static final int DIRECT_COMMENT = 0;
     public static final int EMOJI = 1;

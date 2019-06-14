@@ -2,8 +2,10 @@ package com.xperphile.postservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xperphile.postservice.constant.ClientConstants;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
@@ -22,14 +24,21 @@ import java.util.Map;
 public class PostServiceListener {
 
     @Autowired
-    private RestTemplate restTemplate;
+    private AmqpTemplate amqpTemplate;
 
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
+    @Value("${funnelmessage.exchange}")
+    private String funnelMessageExchange;
+
+    @Value("${funnelmessage.routingkey}")
+    private String funnelMessageRoutingKey;
 
     @Autowired
     private Environment environment;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @RabbitListener(queues = {"postmessage.queue"})
     public void receiveMessage(Map<String, Object> message) {
 
         Map<String, HttpMethod> methodMap = new HashMap<>();
@@ -62,7 +71,7 @@ public class PostServiceListener {
             map.put("message", funnelMessageMappings.get(message.get("message")));
             map.put("method", funnelMethodMappings.get(message.get("message")));
             map.put("requestEntity", object);
-            rabbitTemplate.convertAndSend(environment.getProperty(environment.getProperty("funnelmessage.exchange")), environment.getProperty(environment.getProperty("funnelmessage.queue")), map);
+            amqpTemplate.convertAndSend(funnelMessageExchange, funnelMessageRoutingKey, map);
         }
         catch (Exception exception){
             // todo log the exception

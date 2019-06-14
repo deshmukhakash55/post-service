@@ -31,7 +31,7 @@ public class SubscriptionService {
             throw new IllegalArgumentException("Illegal post_id");
         if(user == null || user.isEmpty())
             throw new IllegalArgumentException("Illegal user");
-        PostSubscription postSubscription = postSubscriptionRepository.findOneByPost_IdAndUser(post_id, user);
+        PostSubscription postSubscription = postSubscriptionRepository.findByPost_IdAndUser(post_id, user).get(0);
         postSubscriptionRepository.deleteById(postSubscription.getId());
     }
 

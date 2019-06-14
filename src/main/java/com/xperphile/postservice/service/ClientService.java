@@ -47,7 +47,7 @@ public class ClientService {
         postMetaRepository.save(postMeta);
     }
 
-    public void addTagsToPost(String post_id, String tag) throws IllegalArgumentException{
+    public void addTagToPost(String post_id, String tag) throws IllegalArgumentException{
         if(tag == null || tag.isEmpty())
             throw new IllegalArgumentException("Illegal tag");
         PostMeta postMeta = postMetaRepository.findById(post_id).get();
@@ -59,7 +59,7 @@ public class ClientService {
         postMetaRepository.save(postMeta);
     }
 
-    public void removeTagsFromPost(String post_id, String tag) throws IllegalArgumentException{
+    public void removeTagFromPost(String post_id, String tag) throws IllegalArgumentException{
         if(tag == null || tag.isEmpty())
             throw new IllegalArgumentException("Illegal tag");
         PostMeta postMeta = postMetaRepository.findById(post_id).get();
@@ -76,7 +76,7 @@ public class ClientService {
         postMetaRepository.save(postMeta);
     }
 
-    public void removeTaggedUsersFromPost(String post_id, String tagged_user) throws IllegalArgumentException{
+    public void removeTaggedUserFromPost(String post_id, String tagged_user) throws IllegalArgumentException{
         if(tagged_user == null || tagged_user.isEmpty())
             throw new IllegalArgumentException("Illegal user");
         PostMeta postMeta = postMetaRepository.findById(post_id).get();
@@ -95,18 +95,18 @@ public class ClientService {
         postMetaRepository.save(postMeta);
     }
 
-    private void removeRecommendation(String post_id, String tagged_user) throws IllegalArgumentException {
+    public void removeRecommendation(String post_id, String user_id) throws IllegalArgumentException {
         if(post_id == null || post_id.isEmpty())
             throw new IllegalArgumentException("Illegal post_id");
-        if(tagged_user == null || tagged_user.isEmpty())
+        if(user_id == null || user_id.isEmpty())
             throw new IllegalArgumentException("Illegal tagged_user");
-        PostRecommendations postRecommendations = postRecommedationRepository.findOneByPost_IdAndUser_Id(post_id, tagged_user);
+        PostRecommendations postRecommendations = postRecommedationRepository.findByPost_IdAndUser_Id(post_id, user_id).get(0);
         if(postRecommendations == null)
             throw new IllegalArgumentException("No such post exists");
         postRecommedationRepository.deleteById(postRecommendations.getId());
     }
 
-    public void addTaggedUsersToPost(String post_id, String tagged_user) throws IllegalArgumentException{
+    public void addTaggedUserToPost(String post_id, String tagged_user) throws IllegalArgumentException{
         if(tagged_user == null || tagged_user.isEmpty())
             throw new IllegalArgumentException("Illegal user");
         PostMeta postMeta = postMetaRepository.findById(post_id).get();
@@ -155,7 +155,7 @@ public class ClientService {
         if(!isValidRecommendation(recommendation))
             throw new IllegalArgumentException("Illegal Recommendation");
         String message = "";
-        PostRecommendations postRecommendations = postRecommedationRepository.findOneByPost_Id(recommendation.getPost_id());
+        PostRecommendations postRecommendations = postRecommedationRepository.findByPost_Id(recommendation.getPost_id()).get(0);
         if(postRecommendations == null){
             String id = UUID.randomUUID().toString();
             Date date = new Date();
@@ -224,6 +224,17 @@ public class ClientService {
         return recommendedPosts;
     }
 
+    public List<DisplayPost> getUserPosts(String user){
+        List<DisplayPost> posts = new ArrayList<>();
+        List<PostMeta> postMetas = postMetaRepository.findByOwnerOrderByCreation_TimeDesc(user);
+        postMetas.stream().forEach(postMeta -> {
+            String post_id = postMeta.getId();
+            PostContent postContent = postContentRepository.findById(post_id).get();
+            DisplayPost displayPost = new DisplayPost(post_id, postMeta.getOwner(), Base64Utility.encode(postContent.getContent()), postMeta.getComments(), postMeta.getEmojis(), postMeta.getTags(), postMeta.getTagged_users(), postMeta.getCreation_time(), postMeta.getLatest_modified_time());
+            posts.add(displayPost);
+        });
+        return posts;
+    }
 
     private boolean isValidRecommendation(Recommendation recommendation) {
         boolean isValid = true;
