@@ -18,13 +18,8 @@ before_script:
     </settings>' > $HOME/.m2/settings.xml
 
 stages:
-  - test
   - build
-
-unit_test:
-  stage: test
-  script:
-    - mvn clean test -B
+  - test
 
 .build: &build_template
   stage: build
@@ -51,3 +46,8 @@ master_build:
     expire_in: 1 month
     paths:
       - target/*.jar
+
+unit_test:
+  stage: test
+  script:
+    - mvn clean test -B
