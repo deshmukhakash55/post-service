@@ -18,36 +18,44 @@ before_script:
     </settings>' > $HOME/.m2/settings.xml
 
 stages:
-  - build
-  - test
+  - compile
 
-.build: &build_template
-  stage: build
+.build:
+  stage: compile
   script:
-    - mvn package -B
+    - mvn compile
 
-develop_build:
-  <<: *build_template
-  only:
-    - branches
-  except:
-    - master
-  artifacts:
-    expire_in: 1 day
-    paths:
-      - target/*.jar
 
-master_build:
-  <<: *build_template
-  only:
-    - master
-    - tags
-  artifacts:
-    expire_in: 1 month
-    paths:
-      - target/*.jar
-
-unit_test:
-  stage: test
-  script:
-    - mvn clean test -B
+#  - build
+#  - test
+#
+#.build: &build_template
+#  stage: build
+#  script:
+#    - mvn package -B
+#
+#develop_build:
+#  <<: *build_template
+#  only:
+#    - branches
+#  except:
+#    - master
+#  artifacts:
+#    expire_in: 1 day
+#    paths:
+#      - target/*.jar
+#
+#master_build:
+#  <<: *build_template
+#  only:
+#    - master
+#    - tags
+#  artifacts:
+#    expire_in: 1 month
+#    paths:
+#      - target/*.jar
+#
+#unit_test:
+#  stage: test
+#  script:
+#    - mvn clean test -B
