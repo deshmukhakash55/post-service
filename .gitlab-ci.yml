@@ -20,7 +20,7 @@ before_script:
 stages:
   - compile
 
-.build:
+mvn_compile:
   stage: compile
   script:
     - mvn compile
