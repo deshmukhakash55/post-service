@@ -26,16 +26,19 @@ import java.util.*;
 public class ClientService {
 
     @Autowired
-    PostContentRepository postContentRepository;
+    private PostContentRepository postContentRepository;
 
     @Autowired
-    PostMetaRepository postMetaRepository;
+    private PostMetaRepository postMetaRepository;
 
     @Autowired
-    PostRecommedationRepository postRecommedationRepository;
+    private PostRecommedationRepository postRecommedationRepository;
 
     @Autowired
-    CommentRepository commentRepository;
+    private CommentRepository commentRepository;
+
+    @Autowired
+    private BlockService blockService;
 
     public void addPost(Post post) throws IllegalArgumentException{
         if(post == null)
@@ -235,6 +238,8 @@ public class ClientService {
             DisplayPost displayPost = new DisplayPost(post_id, postMeta.getOwner(), Base64Utility.decode(postContent.getContent()), postMeta.getComments(), postMeta.getEmojis(), postMeta.getTags(), postMeta.getTagged_users(), postMeta.getCreation_time(), postMeta.getLatest_modified_time());
             recommendedPosts.add(displayPost);
         });
+        List<DisplayPost> blockedPosts = blockService.getBlockedPosts(user);
+        recommendedPosts.removeAll(blockedPosts);
         return recommendedPosts;
     }
 
