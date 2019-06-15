@@ -6,6 +6,9 @@ public class ClientConstants {
     public static final String SUBSCRIPTION_CONTROLLER_MAPPING = "/subscription";
     public static final String REPORT_CONTROLLER_MAPPING = "/report";
     public static final String BLOCK_CONTROLLER_MAPPING = "/block";
+    public static final String ENGINE_CONTROLLER_MAPPING = "/block";
+
+    public static final String POST_ENGINE_URL = "http://{ip-address}:{port}/generateRecommendation";
 
     public static final String CLIENT_ADD_POSTS = "/add";
     public static final String CLIENT_GET_POSTS = "/get";
@@ -33,6 +36,8 @@ public class ClientConstants {
     public static final String CLIENT_ADD_BLOCKED_POST = "/add";
     public static final String CLIENT_REMOVE_BLOCKED_POST = "/remove";
     public static final String CLIENT_GET_BLOCKED_POSTS = "/get/{user_id}";
+
+    public static final String CLIENT_GENERATE_RECOMMENDATIONS = "/generate/{user}";
 
     public static final int DIRECT_COMMENT = 0;
     public static final int EMOJI = 1;
