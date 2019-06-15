@@ -21,7 +21,7 @@ public interface PostMetaRepository extends JpaRepository<PostMeta, String> {
     @Query("select u from PostMeta u order by emojis, creation_time desc")
     List<PostMeta> findAllTop1000OrderByEmojisAndCreation_TimeDesc();
 
-    @Query("select u from PostMeta u where u.owner like %?1% order by creation_time desc")
+    @Query("select u from PostMeta u where u.owner like ?1 order by creation_time desc")
     List<PostMeta> findByOwnerOrderByCreation_TimeDesc(String owner);
 
 }

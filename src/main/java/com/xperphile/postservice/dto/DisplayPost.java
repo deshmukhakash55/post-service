@@ -16,7 +16,7 @@ public class DisplayPost {
     private String owner_id;
 
     @JsonProperty("content")
-    private String content;
+    private byte[] content;
 
     @JsonProperty("comments")
     private BigInteger comments;
@@ -39,7 +39,7 @@ public class DisplayPost {
     public DisplayPost() {
     }
 
-    public DisplayPost(String id, String owner_id, String content, BigInteger comments, BigInteger emojis, String tags, String tagged_users, Timestamp creation_time, Timestamp latest_modified_time) {
+    public DisplayPost(String id, String owner_id, byte[] content, BigInteger comments, BigInteger emojis, String tags, String tagged_users, Timestamp creation_time, Timestamp latest_modified_time) {
         this.id = id;
         this.owner_id = owner_id;
         this.content = content;
@@ -67,11 +67,11 @@ public class DisplayPost {
         this.owner_id = owner_id;
     }
 
-    public String getContent() {
+    public byte[] getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(byte[] content) {
         this.content = content;
     }
 

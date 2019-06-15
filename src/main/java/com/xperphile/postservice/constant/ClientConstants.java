@@ -3,6 +3,8 @@ package com.xperphile.postservice.constant;
 public class ClientConstants {
     public static final String CLIENT_CONTROLLER_MAPPING = "/post";
     public static final String SEARCH_CONTROLLER_MAPPING = "/search";
+    public static final String SUBSCRIPTION_CONTROLLER_MAPPING = "/subscription";
+
     public static final String CLIENT_ADD_POSTS = "/add";
     public static final String CLIENT_GET_POSTS = "/get";
     public static final String CLIENT_ADD_TAG_TO_POST = "/tag/add";
@@ -14,6 +16,13 @@ public class ClientConstants {
     public static final String CLIENT_ADD_RECOMMENDATION = "/recommendation/add";
     public static final String CLIENT_REMOVE_RECOMMENDATION = "/recommendation/remove";
     public static final String CLIENT_GET_RECOMMENDATION = "/recommendation/get";
+
+    public static final String CLIENT_SEARCH_BY_TAG = "/tag";
+    public static final String CLIENT_SEARCH_BY_TAGGED_USER = "/tagged_user";
+    public static final String CLIENT_SEARCH_BY_TEXT = "/text";
+
+    public static final String CLIENT_ADD_POST_SUBSCRIPTION = "/add";
+    public static final String CLIENT_REMOVE_POST_SUBSCRIPTION = "/remove";
 
     public static final int DIRECT_COMMENT = 0;
     public static final int EMOJI = 1;

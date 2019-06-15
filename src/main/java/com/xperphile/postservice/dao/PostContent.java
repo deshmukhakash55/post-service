@@ -13,11 +13,11 @@ public class PostContent {
     @Column(name = "id")
     private String id;
     @Column(name = "content")
-    private byte[] content;
+    private String content;
 
     public PostContent(){}
 
-    public PostContent(String id, byte[] content){
+    public PostContent(String id, String content){
         this.id = id;
         this.content = content;
     }
@@ -30,11 +30,11 @@ public class PostContent {
         this.id = id;
     }
 
-    public byte[] getContent() {
+    public String getContent() {
         return content;
     }
 
-    public void setContent(byte[] content) {
+    public void setContent(String content) {
         this.content = content;
     }
 
