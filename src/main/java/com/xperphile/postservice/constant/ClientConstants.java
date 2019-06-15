@@ -4,6 +4,7 @@ public class ClientConstants {
     public static final String CLIENT_CONTROLLER_MAPPING = "/post";
     public static final String SEARCH_CONTROLLER_MAPPING = "/search";
     public static final String SUBSCRIPTION_CONTROLLER_MAPPING = "/subscription";
+    public static final String REPORT_CONTROLLER_MAPPING = "/report";
 
     public static final String CLIENT_ADD_POSTS = "/add";
     public static final String CLIENT_GET_POSTS = "/get";
@@ -23,6 +24,10 @@ public class ClientConstants {
 
     public static final String CLIENT_ADD_POST_SUBSCRIPTION = "/add";
     public static final String CLIENT_REMOVE_POST_SUBSCRIPTION = "/remove";
+
+    public static final String CLIENT_ADD_POST_REPORT = "/add";
+    public static final String CLIENT_REMOVE_POST_REPORT = "/remove";
+    public static final String CLIENT_GET_POST_REPORTS = "/get/{post_id}";
 
     public static final int DIRECT_COMMENT = 0;
     public static final int EMOJI = 1;
