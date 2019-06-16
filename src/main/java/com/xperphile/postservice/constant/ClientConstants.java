@@ -8,7 +8,8 @@ public class ClientConstants {
     public static final String BLOCK_CONTROLLER_MAPPING = "/block";
     public static final String ENGINE_CONTROLLER_MAPPING = "/block";
 
-    public static final String POST_ENGINE_URL = "http://{ip-address}:{port}/generateRecommendation";
+    public static final String POST_ENGINE_EXCHANGE = "postengine.exchange";
+    public static final String POST_ENGINE_ROUTINGKEY = "postengine.routingkey";
 
     public static final String CLIENT_ADD_POSTS = "/add";
     public static final String CLIENT_GET_POSTS = "/get";
