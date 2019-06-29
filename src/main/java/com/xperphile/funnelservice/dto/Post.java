@@ -1,4 +1,4 @@
-package com.xperphile.postservice.dto;
+package com.xperphile.funnelservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.stereotype.Component;
