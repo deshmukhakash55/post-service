@@ -19,6 +19,7 @@ before_script:
 
 stages:
   - compile
+  - build
 
 mvn_compile:
   stage: compile
@@ -29,10 +30,10 @@ mvn_compile:
 #  - build
 #  - test
 #
-#.build: &build_template
-#  stage: build
-#  script:
-#    - mvn package -B
+build:
+  stage: build
+  script:
+    - mvn clean install -Dmaven.test.skip=true
 #
 #develop_build:
 #  <<: *build_template
