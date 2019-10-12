@@ -36,10 +36,13 @@ public class PostMeta {
     @Column(name = "tagged_users")
     private String tagged_users;
 
+    @Column(name = "name")
+    private String name;
+
     public PostMeta() {
     }
 
-    public PostMeta(String id, String owner, Timestamp creation_time, Timestamp latest_modified_time, BigInteger comments, BigInteger emojis, String tags, String tagged_users) {
+    public PostMeta(String id, String owner, Timestamp creation_time, Timestamp latest_modified_time, BigInteger comments, BigInteger emojis, String tags, String tagged_users, String name) {
         this.id = id;
         this.owner = owner;
         this.creation_time = creation_time;
@@ -48,6 +51,7 @@ public class PostMeta {
         this.emojis = emojis;
         this.tags = tags;
         this.tagged_users = tagged_users;
+        this.name = name;
     }
 
     public String getId() {
@@ -113,4 +117,8 @@ public class PostMeta {
     public void setTagged_users(String tagged_users) {
         this.tagged_users = tagged_users;
     }
+
+    public String getName() { return name; }
+
+    public void setName(String name) { this.name = name; }
 }

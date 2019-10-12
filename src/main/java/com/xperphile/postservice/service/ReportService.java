@@ -70,7 +70,7 @@ public class ReportService {
     public DisplayPost getDisplayPostById(String id){
         PostMeta postMeta = postMetaRepository.findById(id).get();
         PostContent postContent = postContentRepository.findById(id).get();
-        DisplayPost displayPost = new DisplayPost(id, postMeta.getOwner(), Base64Utility.decode(postContent.getContent()),postMeta.getComments(), postMeta.getEmojis(), postMeta.getTags(), postMeta.getTagged_users(), postMeta.getCreation_time(), postMeta.getLatest_modified_time());
+        DisplayPost displayPost = new DisplayPost(id, postMeta.getOwner(), Base64Utility.decode(postContent.getContent()),postMeta.getComments(), postMeta.getEmojis(), postMeta.getTags(), postMeta.getTagged_users(), postMeta.getCreation_time(), postMeta.getLatest_modified_time(), postMeta.getName());
         return displayPost;
     }
 

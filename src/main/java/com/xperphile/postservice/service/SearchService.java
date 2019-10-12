@@ -35,7 +35,7 @@ public class SearchService {
         List<DisplayPost> posts = new ArrayList<>();
         for(PostMeta postMeta : postMetaList){
             PostContent postContent = postContentRepository.findById(postMeta.getId()).get();
-            DisplayPost post = new DisplayPost(postMeta.getId(), postMeta.getOwner(), Base64Utility.decode(postContent.getContent()), postMeta.getComments(), postMeta.getEmojis(), postMeta.getTags(), postMeta.getTagged_users(), postMeta.getCreation_time(), postMeta.getLatest_modified_time());
+            DisplayPost post = new DisplayPost(postMeta.getId(), postMeta.getOwner(), Base64Utility.decode(postContent.getContent()), postMeta.getComments(), postMeta.getEmojis(), postMeta.getTags(), postMeta.getTagged_users(), postMeta.getCreation_time(), postMeta.getLatest_modified_time(), postMeta.getName());
             posts.add(post);
         }
         return posts;
@@ -46,7 +46,7 @@ public class SearchService {
         List<DisplayPost> posts = new ArrayList<>();
         for(PostMeta postMeta : postMetaList){
             PostContent postContent = postContentRepository.findById(postMeta.getId()).get();
-            DisplayPost post = new DisplayPost(postMeta.getId(), postMeta.getOwner(), Base64Utility.decode(postContent.getContent()), postMeta.getComments(), postMeta.getEmojis(), postMeta.getTags(), postMeta.getTagged_users(), postMeta.getCreation_time(), postMeta.getLatest_modified_time());
+            DisplayPost post = new DisplayPost(postMeta.getId(), postMeta.getOwner(), Base64Utility.decode(postContent.getContent()), postMeta.getComments(), postMeta.getEmojis(), postMeta.getTags(), postMeta.getTagged_users(), postMeta.getCreation_time(), postMeta.getLatest_modified_time(), postMeta.getName());
             posts.add(post);
         }
         return posts;
@@ -58,7 +58,7 @@ public class SearchService {
         for(PostMeta postMeta : postMetas){
             PostContent postContent = postContentRepository.findById(postMeta.getId()).get();
             if(BoyerMoore.indexOf(Base64Utility.decode(postContent.getContent()), searchText.getBytes()) != -1){
-                DisplayPost post = new DisplayPost(postMeta.getId(), postMeta.getOwner(), Base64Utility.decode(postContent.getContent()), postMeta.getComments(), postMeta.getEmojis(), postMeta.getTags(), postMeta.getTagged_users(), postMeta.getCreation_time(), postMeta.getLatest_modified_time());
+                DisplayPost post = new DisplayPost(postMeta.getId(), postMeta.getOwner(), Base64Utility.decode(postContent.getContent()), postMeta.getComments(), postMeta.getEmojis(), postMeta.getTags(), postMeta.getTagged_users(), postMeta.getCreation_time(), postMeta.getLatest_modified_time(), postMeta.getName());
                 posts.add(post);
             }
         }

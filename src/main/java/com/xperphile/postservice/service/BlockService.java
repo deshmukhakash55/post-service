@@ -60,7 +60,7 @@ public class BlockService {
             throw new IllegalArgumentException("Illegal post_id");
         PostMeta postMeta = postMetaRepository.findById(post_id).get();
         PostContent postContent = postContentRepository.findById(post_id).get();
-        DisplayPost displayPost = new DisplayPost(post_id, postMeta.getOwner(), Base64Utility.decode(postContent.getContent()), postMeta.getComments(), postMeta.getEmojis(), postMeta.getTags(), postMeta.getTagged_users(), postMeta.getCreation_time(), postMeta.getLatest_modified_time());
+        DisplayPost displayPost = new DisplayPost(post_id, postMeta.getOwner(), Base64Utility.decode(postContent.getContent()), postMeta.getComments(), postMeta.getEmojis(), postMeta.getTags(), postMeta.getTagged_users(), postMeta.getCreation_time(), postMeta.getLatest_modified_time(), postMeta.getName());
         return displayPost;
     }
 

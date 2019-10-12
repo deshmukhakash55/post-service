@@ -47,7 +47,7 @@ public class ClientService {
         Timestamp current_timestamp = new Timestamp(new Date().getTime());
         PostContent postContent = new PostContent(id, post.getContent());
         postContentRepository.save(postContent);
-        PostMeta postMeta = new PostMeta(id, post.getOwner_id(), current_timestamp, current_timestamp, new BigInteger("0"), new BigInteger("0"), "", "");
+        PostMeta postMeta = new PostMeta(id, post.getOwner_id(), current_timestamp, current_timestamp, new BigInteger("0"), new BigInteger("0"), "", "", post.getName());
         postMetaRepository.save(postMeta);
     }
 
@@ -235,7 +235,7 @@ public class ClientService {
             String post_id = recommendedPost.getPost_id();
             PostContent postContent = postContentRepository.findById(post_id).get();
             PostMeta postMeta = postMetaRepository.findById(post_id).get();
-            DisplayPost displayPost = new DisplayPost(post_id, postMeta.getOwner(), Base64Utility.decode(postContent.getContent()), postMeta.getComments(), postMeta.getEmojis(), postMeta.getTags(), postMeta.getTagged_users(), postMeta.getCreation_time(), postMeta.getLatest_modified_time());
+            DisplayPost displayPost = new DisplayPost(post_id, postMeta.getOwner(), Base64Utility.decode(postContent.getContent()), postMeta.getComments(), postMeta.getEmojis(), postMeta.getTags(), postMeta.getTagged_users(), postMeta.getCreation_time(), postMeta.getLatest_modified_time(), postMeta.getName());
             recommendedPosts.add(displayPost);
         });
         List<DisplayPost> blockedPosts = blockService.getBlockedPosts(user);
@@ -250,7 +250,7 @@ public class ClientService {
             String post_id = postMeta.getId();
             String content = postContentRepository.findContentById(post_id);
             System.out.println(content);
-            DisplayPost displayPost = new DisplayPost(post_id, postMeta.getOwner(), Base64Utility.decode(content), postMeta.getComments(), postMeta.getEmojis(), postMeta.getTags(), postMeta.getTagged_users(), postMeta.getCreation_time(), postMeta.getLatest_modified_time());
+            DisplayPost displayPost = new DisplayPost(post_id, postMeta.getOwner(), Base64Utility.decode(content), postMeta.getComments(), postMeta.getEmojis(), postMeta.getTags(), postMeta.getTagged_users(), postMeta.getCreation_time(), postMeta.getLatest_modified_time(), postMeta.getName());
             posts.add(displayPost);
         });
         return posts;
