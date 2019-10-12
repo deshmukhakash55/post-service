@@ -1,3 +1,16 @@
 {
-
+  "add_post" : "/post/add",
+  "add_tag_to_post" : "/post/tag/add",
+  "remove_tag_from_post" : "/post/tag/remove",
+  "remove_tagged_user_from_post" : "/post/tagged_user/remove",
+  "add_tagged_user_from_post" : "/post/tagged_user/add",
+  "update_post" : "/post/update",
+  "add_comment_or_emoji_post" : "/post/comment_emoji",
+  "remove_recommendation" : "/post/recommendation/remove",
+  "block_post" : "/block/add",
+  "unblock_post" : "/block/remove",
+  "add_post_report" : "/report/add",
+  "rem_post_report" : "/report/remove",
+  "post_add_subscription" : "/subscription/add",
+  "post_rem_subscription" : "/subscription/remove"
 }

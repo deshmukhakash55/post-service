@@ -1,22 +1,20 @@
-package com.xperphile.postservice.dto;
+package com.xperphile.funnelservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 
 @Component
-public class DisplayPost {
+public class DisplayPost implements Serializable {
 
     @JsonProperty("id")
     private String id;
 
     @JsonProperty("owner_id")
     private String owner_id;
-
-    @JsonProperty("name")
-    private String name;
 
     @JsonProperty("content")
     private byte[] content;
@@ -42,7 +40,7 @@ public class DisplayPost {
     public DisplayPost() {
     }
 
-    public DisplayPost(String id, String owner_id, byte[] content, BigInteger comments, BigInteger emojis, String tags, String tagged_users, Timestamp creation_time, Timestamp latest_modified_time, String name) {
+    public DisplayPost(String id, String owner_id, byte[] content, BigInteger comments, BigInteger emojis, String tags, String tagged_users, Timestamp creation_time, Timestamp latest_modified_time) {
         this.id = id;
         this.owner_id = owner_id;
         this.content = content;
@@ -52,7 +50,6 @@ public class DisplayPost {
         this.tagged_users = tagged_users;
         this.creation_time = creation_time;
         this.latest_modified_time = latest_modified_time;
-        this.name = name;
     }
 
     public String getId() {
@@ -126,13 +123,4 @@ public class DisplayPost {
     public void setlatest_modified_time(Timestamp latest_modified_time) {
         this.latest_modified_time = latest_modified_time;
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
 }

@@ -14,6 +14,7 @@ import com.xperphile.postservice.repository.PostContentRepository;
 import com.xperphile.postservice.repository.PostMetaRepository;
 import com.xperphile.postservice.repository.PostRecommedationRepository;
 import com.xperphile.postservice.utility.Base64Utility;
+import com.xperphile.postservice.utility.StringListConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,102 +26,116 @@ import java.util.*;
 public class ClientService {
 
     @Autowired
-    PostContentRepository postContentRepository;
+    private PostContentRepository postContentRepository;
 
     @Autowired
-    PostMetaRepository postMetaRepository;
+    private PostMetaRepository postMetaRepository;
 
     @Autowired
-    PostRecommedationRepository postRecommedationRepository;
+    private PostRecommedationRepository postRecommedationRepository;
 
     @Autowired
-    CommentRepository commentRepository;
+    private CommentRepository commentRepository;
+
+    @Autowired
+    private BlockService blockService;
 
     public void addPost(Post post) throws IllegalArgumentException{
         if(post == null)
             throw new IllegalArgumentException("Invalid Post");
         String id = UUID.randomUUID().toString();
         Timestamp current_timestamp = new Timestamp(new Date().getTime());
-        PostContent postContent = new PostContent(id, Base64Utility.decode(post.getContent()));
+        PostContent postContent = new PostContent(id, post.getContent());
         postContentRepository.save(postContent);
-        PostMeta postMeta = new PostMeta(id, post.getOwner_id(), current_timestamp, current_timestamp, new BigInteger("0"), new BigInteger("0"), "", "");
+        PostMeta postMeta = new PostMeta(id, post.getOwner_id(), current_timestamp, current_timestamp, new BigInteger("0"), new BigInteger("0"), "", "", post.getName());
         postMetaRepository.save(postMeta);
     }
 
-    public void addTagsToPost(String post_id, String tag) throws IllegalArgumentException{
+    public void addTagToPost(String post_id, String tag) throws IllegalArgumentException{
         if(tag == null || tag.isEmpty())
             throw new IllegalArgumentException("Illegal tag");
         PostMeta postMeta = postMetaRepository.findById(post_id).get();
         String tags = postMeta.getTags();
-        if(!tags.isEmpty())
-            tags = tags.concat(ClientConstants.DELIMITER);
-        tags = tags.concat(tag);
+        List<String> tagsList = StringListConvertor.convertStringToList(tags);
+        if(tagsList.contains(tag))
+            throw new IllegalArgumentException("Tag already exists");
+        tagsList.add(tag);
+        tags = StringListConvertor.convertListToString(tagsList);
         postMeta.setTags(tags);
         postMetaRepository.save(postMeta);
     }
 
-    public void removeTagsFromPost(String post_id, String tag) throws IllegalArgumentException{
+    public void removeTagFromPost(String post_id, String tag) throws IllegalArgumentException{
         if(tag == null || tag.isEmpty())
             throw new IllegalArgumentException("Illegal tag");
         PostMeta postMeta = postMetaRepository.findById(post_id).get();
         String tags = postMeta.getTags();
-        String updatedTags = "";
-        StringTokenizer tokenizer = new StringTokenizer(tags, ClientConstants.DELIMITER);
-        while (tokenizer.hasMoreElements()){
-            String currentTag = tokenizer.nextElement().toString();
-            if(currentTag.equalsIgnoreCase(tag))
-                continue;
-            updatedTags = updatedTags.concat(currentTag + ClientConstants.DELIMITER);
-        }
-        postMeta.setTags(updatedTags);
+        List<String> tagsList = StringListConvertor.convertStringToList(tags);
+        if(!tagsList.contains(tag))
+            throw new IllegalArgumentException("No such tag exists");
+        tagsList.remove(tag);
+        tags = StringListConvertor.convertListToString(tagsList);
+        postMeta.setTags(tags);
         postMetaRepository.save(postMeta);
     }
 
-    public void removeTaggedUsersFromPost(String post_id, String tagged_user) throws IllegalArgumentException{
+    public void removeTaggedUserFromPost(String post_id, String tagged_user) throws IllegalArgumentException{
         if(tagged_user == null || tagged_user.isEmpty())
             throw new IllegalArgumentException("Illegal user");
         PostMeta postMeta = postMetaRepository.findById(post_id).get();
         String taggedUsers = postMeta.getTagged_users();
-        String updateTaggedUsers = "";
-        StringTokenizer tokenizer = new StringTokenizer(taggedUsers, ClientConstants.DELIMITER);
-        while (tokenizer.hasMoreElements()){
-            String currentTaggedUser = tokenizer.nextElement().toString();
-            if(currentTaggedUser.equalsIgnoreCase(tagged_user)) {
-                removeRecommendation(post_id, tagged_user);
-                continue;
-            }
-            updateTaggedUsers = updateTaggedUsers.concat(currentTaggedUser + ClientConstants.DELIMITER);
-        }
-        postMeta.setTagged_users(updateTaggedUsers);
+        List<String> taggedUserLists = StringListConvertor.convertStringToList(taggedUsers);
+        if(!taggedUserLists.contains(tagged_user))
+            throw new IllegalArgumentException("No such tagged user");
+        taggedUserLists.remove(tagged_user);
+        taggedUsers = StringListConvertor.convertListToString(taggedUserLists);
+        postMeta.setTagged_users(taggedUsers);
         postMetaRepository.save(postMeta);
+        if(onlyRecommendationByTagging(post_id, tagged_user))
+            removeRecommendation(post_id, tagged_user);
     }
 
-    private void removeRecommendation(String post_id, String tagged_user) throws IllegalArgumentException {
+    private boolean onlyRecommendationByTagging(String post_id, String tagged_user) {
+        boolean result = false;
+        List<PostRecommendations> postRecommendations = postRecommedationRepository.findByPost_IdAndUser_Id(post_id, tagged_user);
+        if(!postRecommendations.isEmpty())
+        {
+            PostRecommendations postRecommendation = postRecommendations.get(0);
+            if(postRecommendation.getSource_type().equals(ClientConstants.TAGGED + "")){
+                result = true;
+            }
+        }
+        return result;
+    }
+
+    public void removeRecommendation(String post_id, String user_id) throws IllegalArgumentException {
         if(post_id == null || post_id.isEmpty())
             throw new IllegalArgumentException("Illegal post_id");
-        if(tagged_user == null || tagged_user.isEmpty())
+        if(user_id == null || user_id.isEmpty())
             throw new IllegalArgumentException("Illegal tagged_user");
-        PostRecommendations postRecommendations = postRecommedationRepository.findOneByPost_IdAndUser_Id(post_id, tagged_user);
+        PostRecommendations postRecommendations = postRecommedationRepository.findByPost_IdAndUser_Id(post_id, user_id).get(0);
         if(postRecommendations == null)
             throw new IllegalArgumentException("No such post exists");
         postRecommedationRepository.deleteById(postRecommendations.getId());
     }
 
-    public void addTaggedUsersToPost(String post_id, String tagged_user) throws IllegalArgumentException{
+    public void addTaggedUserToPost(String post_id, String tagged_user) throws IllegalArgumentException{
         if(tagged_user == null || tagged_user.isEmpty())
             throw new IllegalArgumentException("Illegal user");
         PostMeta postMeta = postMetaRepository.findById(post_id).get();
         String taggedUsers = postMeta.getTagged_users();
-        if(!taggedUsers.isEmpty())
-            taggedUsers = taggedUsers.concat(ClientConstants.DELIMITER);
-        taggedUsers = taggedUsers.concat(tagged_user);
+        List<String> taggedUsersList = StringListConvertor.convertStringToList(taggedUsers);
+        if(taggedUsersList.contains(tagged_user))
+            throw new IllegalArgumentException("User already tagged");
+        taggedUsersList.add(tagged_user);
+        taggedUsers = StringListConvertor.convertListToString(taggedUsersList);
         postMeta.setTagged_users(taggedUsers);
         postMetaRepository.save(postMeta);
         String status = addRecommendation(new Recommendation(post_id, tagged_user, "" + ClientConstants.TAGGED, postMeta.getOwner()));
     }
 
     public void updatePost(Post post, String post_id) throws IllegalArgumentException{
-        PostContent postContent = new PostContent(post_id, Base64Utility.decode(post.getContent()));
+        PostContent postContent = new PostContent(post_id, post.getContent());
         Optional<PostMeta> optionalPostMeta = postMetaRepository.findById(post_id);
         if(!optionalPostMeta.isPresent())
             throw new IllegalArgumentException("Post doesn't exists");
@@ -155,8 +170,9 @@ public class ClientService {
         if(!isValidRecommendation(recommendation))
             throw new IllegalArgumentException("Illegal Recommendation");
         String message = "";
-        PostRecommendations postRecommendations = postRecommedationRepository.findOneByPost_Id(recommendation.getPost_id());
-        if(postRecommendations == null){
+        List<PostRecommendations> postRecommendationsList = postRecommedationRepository.findByPost_Id(recommendation.getPost_id());
+        PostRecommendations postRecommendations;
+        if(postRecommendationsList == null ||  postRecommendationsList.isEmpty()){
             String id = UUID.randomUUID().toString();
             Date date = new Date();
             Timestamp creation_time = new Timestamp(date.getTime());
@@ -171,6 +187,7 @@ public class ClientService {
             postRecommendations = new PostRecommendations(id, recommendation.getPost_id(), recommendation.getUser_id(), recommendation.getSource_type(), recommendation.getSource(), creation_time, expiry_time);
         }
         else{
+            postRecommendations = postRecommendationsList.get(0);
             int current_source_type = Integer.parseInt(postRecommendations.getSource_type());
             int newer_source_type = Integer.parseInt(recommendation.getSource_type());
             if(current_source_type == ClientConstants.RECOMMENDATION_FROM_USER && newer_source_type == ClientConstants.RECOMMENDATION_FROM_ENGINE)
@@ -218,18 +235,32 @@ public class ClientService {
             String post_id = recommendedPost.getPost_id();
             PostContent postContent = postContentRepository.findById(post_id).get();
             PostMeta postMeta = postMetaRepository.findById(post_id).get();
-            DisplayPost displayPost = new DisplayPost(post_id, postMeta.getOwner(), Base64Utility.encode(postContent.getContent()), postMeta.getComments(), postMeta.getEmojis(), postMeta.getTags(), postMeta.getTagged_users(), postMeta.getCreation_time(), postMeta.getLatest_modified_time());
+            DisplayPost displayPost = new DisplayPost(post_id, postMeta.getOwner(), Base64Utility.decode(postContent.getContent()), postMeta.getComments(), postMeta.getEmojis(), postMeta.getTags(), postMeta.getTagged_users(), postMeta.getCreation_time(), postMeta.getLatest_modified_time(), postMeta.getName());
             recommendedPosts.add(displayPost);
         });
+        List<DisplayPost> blockedPosts = blockService.getBlockedPosts(user);
+        recommendedPosts.removeAll(blockedPosts);
         return recommendedPosts;
     }
 
+    public List<DisplayPost> getUserPosts(String user){
+        List<DisplayPost> posts = new ArrayList<>();
+        List<PostMeta> postMetas = postMetaRepository.findByOwnerOrderByCreation_TimeDesc(user);
+        postMetas.stream().forEach(postMeta -> {
+            String post_id = postMeta.getId();
+            String content = postContentRepository.findContentById(post_id);
+            System.out.println(content);
+            DisplayPost displayPost = new DisplayPost(post_id, postMeta.getOwner(), Base64Utility.decode(content), postMeta.getComments(), postMeta.getEmojis(), postMeta.getTags(), postMeta.getTagged_users(), postMeta.getCreation_time(), postMeta.getLatest_modified_time(), postMeta.getName());
+            posts.add(displayPost);
+        });
+        return posts;
+    }
 
     private boolean isValidRecommendation(Recommendation recommendation) {
         boolean isValid = true;
         try{
             int source_type = Integer.parseInt(recommendation.getSource_type());
-            if(source_type > 1)
+            if(source_type > 2)
                 isValid = false;
         }
         catch (NumberFormatException numberFormatException){

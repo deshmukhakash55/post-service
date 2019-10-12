@@ -3,7 +3,42 @@ package com.xperphile.postservice.constant;
 public class ClientConstants {
     public static final String CLIENT_CONTROLLER_MAPPING = "/post";
     public static final String SEARCH_CONTROLLER_MAPPING = "/search";
+    public static final String SUBSCRIPTION_CONTROLLER_MAPPING = "/subscription";
+    public static final String REPORT_CONTROLLER_MAPPING = "/report";
+    public static final String BLOCK_CONTROLLER_MAPPING = "/block";
+    public static final String ENGINE_CONTROLLER_MAPPING = "/block";
+
+    public static final String POST_ENGINE_EXCHANGE = "postengine.exchange";
+    public static final String POST_ENGINE_ROUTINGKEY = "postengine.routingkey";
+
     public static final String CLIENT_ADD_POSTS = "/add";
+    public static final String CLIENT_GET_POSTS = "/get";
+    public static final String CLIENT_ADD_TAG_TO_POST = "/tag/add";
+    public static final String CLIENT_REMOVE_TAG_FROM_POST = "/tag/remove";
+    public static final String CLIENT_REMOVE_TAGGED_USER_FROM_POST = "/tagged_user/remove";
+    public static final String CLIENT_ADD_TAGGED_USER_TO_POST = "/tagged_user/add";
+    public static final String CLIENT_UPDATE_POST = "/update/{post_id}";
+    public static final String CLIENT_ADD_COMMENT_OR_EMOJI = "/comment_emoji";
+    public static final String CLIENT_ADD_RECOMMENDATION = "/recommendation/add";
+    public static final String CLIENT_REMOVE_RECOMMENDATION = "/recommendation/remove";
+    public static final String CLIENT_GET_RECOMMENDATION = "/recommendation/get";
+
+    public static final String CLIENT_SEARCH_BY_TAG = "/tag";
+    public static final String CLIENT_SEARCH_BY_TAGGED_USER = "/tagged_user";
+    public static final String CLIENT_SEARCH_BY_TEXT = "/text";
+
+    public static final String CLIENT_ADD_POST_SUBSCRIPTION = "/add";
+    public static final String CLIENT_REMOVE_POST_SUBSCRIPTION = "/remove";
+
+    public static final String CLIENT_ADD_POST_REPORT = "/add";
+    public static final String CLIENT_REMOVE_POST_REPORT = "/remove";
+    public static final String CLIENT_GET_POST_REPORTS = "/get/{post_id}";
+
+    public static final String CLIENT_ADD_BLOCKED_POST = "/add";
+    public static final String CLIENT_REMOVE_BLOCKED_POST = "/remove";
+    public static final String CLIENT_GET_BLOCKED_POSTS = "/get/{user_id}";
+
+    public static final String CLIENT_GENERATE_RECOMMENDATIONS = "/generate/{user}";
 
     public static final int DIRECT_COMMENT = 0;
     public static final int EMOJI = 1;

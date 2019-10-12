@@ -13,6 +13,8 @@ public class StringListConvertor {
         StringTokenizer tokenizer = new StringTokenizer(listString, ClientConstants.DELIMITER);
         while (tokenizer.hasMoreElements()){
             String item = tokenizer.nextElement().toString();
+            if(item.length() == 0 || item.isEmpty())
+                continue;
             list.add(item);
         }
         return list;
@@ -21,7 +23,7 @@ public class StringListConvertor {
     public static String convertListToString(List<String> list){
         String string = "";
         for (String item : list)
-            string = string.concat(item);
+            string = string.concat(item + ClientConstants.DELIMITER);
         return string;
     }
 

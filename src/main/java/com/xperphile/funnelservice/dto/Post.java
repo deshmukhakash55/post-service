@@ -1,4 +1,4 @@
-package com.xperphile.postservice.dto;
+package com.xperphile.funnelservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.stereotype.Component;
@@ -11,19 +11,15 @@ public class Post implements Serializable {
     @JsonProperty("owner_id")
     private String owner_id;
 
-    @JsonProperty("name")
-    private String name;
-
     @JsonProperty("content")
     private String content;
 
     public Post() {
     }
 
-    public Post(String owner_id, String content, String name) {
+    public Post(String owner_id, String content) {
         this.owner_id = owner_id;
         this.content = content;
-        this.name = name;
     }
 
     public String getOwner_id() {
@@ -41,9 +37,5 @@ public class Post implements Serializable {
     public void setContent(String content) {
         this.content = content;
     }
-
-    public String getName() { return name; };
-
-    public void setName(String name) { this.name = name; }
 
 }

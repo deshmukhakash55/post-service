@@ -1,7 +1,7 @@
 image: maven:3.3-jdk-8-alpine
 
 cache:
-  key: "$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME"
+  key: "post-service"
   paths:
     - .m2/
 
@@ -10,106 +10,53 @@ variables:
 
 before_script:
   - mkdir -p $HOME/.m2/
-  - echo '<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  - echo '<?xml version="1.0" encoding="UTF-8"?>
+    <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
-    https://maven.apache.org/xsd/settings-1.0.0.xsd">
-    <servers>
-    <server>
-    <id>private-maven</id>
-    <username>${MAVEN_USER}</username>
-    <password>${MAVEN_PASS}</password>
-    </server>
-    </servers>
-    <profiles>
-    <profile>
-    <id>default</id>
-    <repositories>
-    <repository>
-    <id>nexus-snapshots</id>
-    <url>https://example.com/repository/maven-snapshots/</url>
-    <releases>
-    <enabled>false</enabled>
-    </releases>
-    <snapshots>
-    <enabled>true</enabled>
-    </snapshots>
-    </repository>
-    <repository>
-    <id>nexus-releases</id>
-    <url>https://example.com/repository/maven-releases/</url>
-    <releases>
-    <enabled>true</enabled>
-    </releases>
-    <snapshots>
-    <enabled>false</enabled>
-    </snapshots>
-    </repository>
-    </repositories>
-    </profile>
-    </profiles>
-    <activeProfiles>
-    <activeProfile>default</activeProfile>
-    </activeProfiles>
-    <mirrors>
-    <mirror>
-    <id>nexus-maven</id>
-    <url>https://example.com/repository/maven-public/</url>
-    <mirrorOf>*</mirrorOf>
-    </mirror>
-    </mirrors>
+    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
     </settings>' > $HOME/.m2/settings.xml
 
 stages:
-  - test
+  - compile
   - build
-  - deploy
 
-unit_test:
-  stage: test
+mvn_compile:
+  stage: compile
   script:
-    - mvn clean test -B
+    - mvn compile
 
-check_style:
-  stage: test
-  script:
-    - mvn clean checkstyle:check -B
 
-.build: &build_template
+#  - build
+#  - test
+#
+build:
   stage: build
   script:
-    - mvn package -B
-
-develop_build:
-  <<: *build_template
-  only:
-    - branches
-  except:
-    - master
-  artifacts:
-    expire_in: 1 day
-    paths:
-      - target/*.jar
-
-master_build:
-  <<: *build_template
-  only:
-    - master
-    - tags
-  artifacts:
-    expire_in: 1 month
-    paths:
-      - target/*.jar
-
-build_image:
-  stage: deploy
-  image: docker:latest
-  only:
-    - tags
-  script:
-    - mkdir -p target/docker/
-    - cp src/main/docker/* target/docker/
-    - unzip -oq target/*.jar -d target/docker/
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE:$CI_BUILD_TAG target/docker/
-    - docker push $CI_REGISTRY_IMAGE:$CI_BUILD_TAG
+    - mvn clean install -Dmaven.test.skip=true
+#
+#develop_build:
+#  <<: *build_template
+#  only:
+#    - branches
+#  except:
+#    - master
+#  artifacts:
+#    expire_in: 1 day
+#    paths:
+#      - target/*.jar
+#
+#master_build:
+#  <<: *build_template
+#  only:
+#    - master
+#    - tags
+#  artifacts:
+#    expire_in: 1 month
+#    paths:
+#      - target/*.jar
+#
+#unit_test:
+#  stage: test
+#  script:
+#    - mvn clean test -B
